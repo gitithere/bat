@@ -1,0 +1,109 @@
+REM BATCH SCRIPT TO COPY FILES FROM SOURCESERVER (XXX.XXX.XXX.XXX) TO DESTINATIONSERVER (XXX.XXX.XXX.XXX).  THIS IS TO TAKE A BACKUP COPY ONCE ON SOURCESERVER.
+
+@echo off
+
+REM ***GET THE LATEST DATE****
+for /f "tokens=1-4 delims=/ " %%i in ("%date%") do (
+     set dow=%%i
+     set month=%%j
+     set day=%%k
+     set year=%%l
+)
+set datestrMMDDYYYY=%month%_%day%_%year%
+set datestrYYYYMMDD=%year%%month%%day%
+
+REM ***THE LOG IS SAVED HERE****
+SET LOG=\\SOURCESERVER\c$\tmp\log\XXXLOCATION\%datestrYYYYMMDD%_Backup_XXXLOCATION.log
+
+REM ***XXX1***
+SET SRC1=\\SRCSERVER\Backup_XXX1\Backups\Databases\
+SET DST1=\\DSTSERVER\e$\Backup_XXX1\Backups\Databases\
+
+REM ***XXX2***
+SET SRC2=\\SRCSERVER\Backup_XXX2\Backups\Databases\
+SET DST2=\\DSTSERVER\e$\Backup_XXX2\Backups\Databases\
+
+REM ***XXX3***
+SET SRC3=\\SRCSERVER\Backup_XXX3\Backups\Databases\
+SET DST3=\\DSTSERVER\e$\Backup_XXX3\Backups\Databases\
+
+REM ***XXX4***
+SET SRC4=\\SRCSERVER\Backup_XXX4\Backups\Databases\
+SET DST4=\\DSTSERVER\e$\Backup_XXX4\Backups\Databases\
+
+REM ***XXX5***
+SET SRC5=\\SRCSERVER\Backup_XXX5\Backups\Databases\
+SET DST5=\\DSTSERVER\e$\Backup_XXX5\Backups\Databases\
+
+REM ***XXX6***
+SET SRC6=\\SRCSERVER\Backup_XXX6\Backups\Databases\
+SET DST6=\\DSTSERVER\e$\Backup_XXX6\Backups\Databases\
+
+REM ***ROBOCOPY COMMAND TO COPY XXX1***
+ROBOCOPY %SRC1% %DST1% /E /PURGE /R:1 /W:1 /Z /NP /LOG:%LOG%
+@if errorlevel 16 echo ***ERROR *** EXIT /B %errorlevel%
+@if errorlevel 8  echo **FAILED COPY ** EXIT /B %errorlevel%
+@if errorlevel 4  echo *MISMATCHES *  EXIT /B %errorlevel%
+@if errorlevel 2  echo EXTRA FILES   EXIT /B %errorlevel%
+@if errorlevel 1  echo --errorlevel 1 COPY XXX1 Successful--
+@if errorlevel 0  echo --COPY 1 OF 6 TXXX1 Successful--
+
+REM ***ROBOCOPY COMMAND TO COPY XXX2***
+ROBOCOPY %SRC2% %DST2% /E /PURGE /R:1 /W:1 /Z /NP /LOG+:%LOG%
+@if errorlevel 16 echo ***ERROR *** EXIT /B %errorlevel%
+@if errorlevel 8  echo **FAILED COPY ** EXIT /B %errorlevel%
+@if errorlevel 4  echo *MISMATCHES *  EXIT /B %errorlevel%
+@if errorlevel 2  echo EXTRA FILES   EXIT /B %errorlevel%
+@if errorlevel 1  echo --errorlevel 1 COPY XXXX2 Successful--
+@if errorlevel 0  echo --COPY 2 OF 6 XXX2 Successful--
+
+REM ***ROBOCOPY COMMAND TO COPY XXX3***
+ROBOCOPY %SRC3% %DST3% /E /PURGE /R:1 /W:1 /Z /NP /LOG+:%LOG%
+@if errorlevel 16 echo ***ERROR *** EXIT /B %errorlevel%
+@if errorlevel 8  echo **FAILED COPY ** EXIT /B %errorlevel%
+@if errorlevel 4  echo *MISMATCHES *  EXIT /B %errorlevel%
+@if errorlevel 2  echo EXTRA FILES   EXIT /B %errorlevel%
+@if errorlevel 1  echo --errorlevel 1 COPY XXX3 Successful--
+@if errorlevel 0  echo --COPY 3 OF 6 XXX3 Successful--
+
+REM ***ROBOCOPY COMMAND TO COPY XXX4***
+ROBOCOPY %SRC4% %DST4% /E /PURGE /R:1 /W:1 /Z /NP /LOG+:%LOG%
+@if errorlevel 16 echo ***ERROR *** EXIT /B %errorlevel%
+@if errorlevel 8  echo **FAILED COPY ** EXIT /B %errorlevel%
+@if errorlevel 4  echo *MISMATCHES *  EXIT /B %errorlevel%
+@if errorlevel 2  echo EXTRA FILES   EXIT /B %errorlevel%
+@if errorlevel 1  echo --errorlevel 1 COPY XXX4 Successful--
+@if errorlevel 0  echo --COPY 4 OF 6 XXX4 Successful--
+
+REM ***ROBOCOPY COMMAND TO COPY XXX5***
+ROBOCOPY %SRC5% %DST5% /E /PURGE /R:1 /W:1 /Z /NP /LOG+:%LOG%
+@if errorlevel 16 echo ***ERROR *** EXIT /B %errorlevel%
+@if errorlevel 8  echo **FAILED COPY ** EXIT /B %errorlevel%
+@if errorlevel 4  echo *MISMATCHES *  EXIT /B %errorlevel%
+@if errorlevel 2  echo EXTRA FILES   EXIT /B %errorlevel%
+@if errorlevel 1  echo --errorlevel 1 COPY XXX5 Successful--
+@if errorlevel 0  echo --COPY 5 OF 6 XXX5 Successful--
+
+REM ***ROBOCOPY COMMAND TO COPY XXX6***
+ROBOCOPY %SRC6% %DST6% /E /PURGE /R:1 /W:1 /Z /NP /LOG+:%LOG%
+@if errorlevel 16 echo ***ERROR *** EXIT /B %errorlevel%
+@if errorlevel 8  echo **FAILED COPY ** EXIT /B %errorlevel%
+@if errorlevel 4  echo *MISMATCHES *  EXIT /B %errorlevel%
+@if errorlevel 2  echo EXTRA FILES   EXIT /B %errorlevel%
+@if errorlevel 1  echo --errorlevel 1 COPY XXX6 Successful--
+@if errorlevel 0  echo --COPY 6 OF 6 XXX6 Successful--
+
+
+REM ***DELETE LOGS OLDER THAN A SET DAYS AND WRITE OUT TO LOG***
+echo --Checking Logs...If need to delete...--
+echo --IF LOGS OLDER THAN 7 DAYS-LOGS WERE DELETED:...--- >> %LOG%
+FORFILES -p "C:\tmp\log\SOURCESERVER1" -s -m *.* -d -7 -c "cmd /c echo @file" 2>&1 | find /v /i "ERROR: No files found with the specified search criteria." >> %LOG%
+FORFILES -p "C:\tmp\log\SOURCESERVER2" -s -m *.* -d -7 -c "cmd /c DEL @file" 2>&1 | find /v /i "ERROR: No files found with the specified search criteria."
+
+echo ---DELETION File Check Successful--- >> %LOG%
+echo ---DELETION File Check Successful---
+
+echo ****%datestrYYYYMMDD% END OF JOB**** >> %LOG%
+echo ****%datestrYYYYMMDD% END OF JOB****
+
+EXIT /B
